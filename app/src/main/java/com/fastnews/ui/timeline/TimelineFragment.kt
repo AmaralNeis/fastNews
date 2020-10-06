@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -20,30 +21,28 @@ import com.fastnews.ui.detail.DetailFragment.Companion.KEY_POST
 import com.fastnews.viewmodel.PostViewModel
 import kotlinx.android.synthetic.main.fragment_timeline.*
 import kotlinx.android.synthetic.main.include_state_without_conn_timeline.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 
-class TimelineFragment : Fragment() {
+class TimelineFragment : Fragment(R.layout.fragment_timeline) {
 
     private val viewModel: PostViewModel by lazy {
         ViewModelProviders.of(this).get(PostViewModel::class.java)
     }
 
-    private lateinit var adapter: TimelineAdapter
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_timeline, container, false)
+    private val adapter: TimelineAdapter by lazy {
+        TimelineAdapter { it, imageView -> onClickItem(it, imageView) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        buildActionBar()
-        buildTimeline()
-        verifyConnectionState()
+            buildActionBar()
+            buildTimeline()
+            verifyConnectionState()
     }
 
     private fun verifyConnectionState() {
@@ -71,27 +70,27 @@ class TimelineFragment : Fragment() {
     }
 
     private fun buildTimeline() {
-        adapter = TimelineAdapter { it, imageView ->
-            onClickItem(it, imageView)
-        }
-
         timeline_rv.layoutManager = LinearLayoutManager(context)
         timeline_rv.itemAnimator = DefaultItemAnimator()
         timeline_rv.adapter = adapter
+
     }
 
     private fun fetchTimeline() {
-        viewModel.getPosts("", 50).observe(this, Observer<List<PostData>> { posts ->
-            posts.let {
-                adapter.setData(posts)
-                hideProgress()
-                showPosts()
+        if (adapter.itemCount == 0) {
+            lifecycleScope.launch {
+                viewModel.getPosts().collectLatest {
+                    adapter.submitData(it)
+                }
             }
-        })
+        }
+
+        hideProgress()
+        showPosts()
     }
 
     private fun showPosts() {
-        timeline_rv.visibility = View.VISIBLE
+            timeline_rv.visibility = View.VISIBLE
     }
 
     private fun showProgress() {

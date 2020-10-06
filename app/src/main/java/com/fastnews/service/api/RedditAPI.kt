@@ -18,7 +18,6 @@ object RedditAPI {
         .client(httpClient.build())
         .build()
 
-    var redditService = retrofit.create<RedditService>(
-        RedditService::class.java)
+    var redditService: RedditService = retrofit.create(RedditService::class.java)
 
 }

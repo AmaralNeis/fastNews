@@ -1,10 +1,13 @@
 package com.fastnews.ui.timeline
 
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.fastnews.R
 import com.fastnews.extension.loadWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.service.model.PostData
@@ -15,6 +18,13 @@ import kotlinx.android.synthetic.main.include_item_timeline_timeleft.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_title.view.*
 
 class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+
+    companion object {
+        fun create(parent: ViewGroup): TimelineItemViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_timeline, parent, false)
+            return TimelineItemViewHolder(view)
+        }
+    }
     var data: PostData? = null
         set(value) {
             field = value

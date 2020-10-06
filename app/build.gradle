@@ -132,8 +132,13 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    // Paging
+    implementation "androidx.paging:paging-runtime:$rootProject.pagingVersion"
 
+    // Koin for Android
+    implementation "org.koin:koin-android:$rootProject.koinVersion"
+    implementation "org.koin:koin-androidx-scope:$rootProject.koinVersion"
+    implementation "org.koin:koin-androidx-viewmodel:$rootProject.koinVersion"
 
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'

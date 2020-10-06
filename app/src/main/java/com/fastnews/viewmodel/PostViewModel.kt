@@ -1,30 +1,27 @@
 package com.fastnews.viewmodel
 
-import android.app.Application
-import androidx.annotation.UiThread
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.fastnews.mechanism.Coroutines
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.fastnews.repository.PostDataSource
 import com.fastnews.repository.PostRepository
 import com.fastnews.service.model.PostData
+import kotlinx.coroutines.flow.Flow
 
-class PostViewModel(application: Application) : AndroidViewModel(application) {
+class PostViewModel(private val repository: PostRepository) : ViewModel() {
 
-    private lateinit var posts: MutableLiveData<List<PostData>>
+    fun getPosts(): Flow<PagingData<PostData>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10,
+                initialLoadSize = 20,
+                prefetchDistance = 5,
+                enablePlaceholders = false),
 
-    @UiThread
-    fun getPosts(after: String, limit: Int): LiveData<List<PostData>> {
-            if (!::posts.isInitialized) {
-                posts = MutableLiveData()
-
-                Coroutines.ioThenMain({
-                    PostRepository.getPosts(after, limit)
-                }) {
-                    posts.postValue(it)
-                }
-            }
-        return posts
+            pagingSourceFactory = { PostDataSource(repository) }
+        ).flow.cachedIn(viewModelScope)
     }
 
 }

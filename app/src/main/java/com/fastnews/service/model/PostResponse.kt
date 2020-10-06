@@ -5,7 +5,7 @@ import android.os.Parcelable
 
 data class PostResponse(val data: PostDataChild)
 
-data class PostDataChild(val children: List<PostChildren>)
+data class PostDataChild(val children: List<PostChildren>, val after: String)
 
 data class PostChildren(val data: PostData)
 
