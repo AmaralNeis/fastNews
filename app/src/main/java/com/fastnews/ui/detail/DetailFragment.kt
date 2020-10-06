@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.fastnews.R
@@ -28,6 +27,7 @@ import kotlinx.android.synthetic.main.include_detail_post_thumbnail.*
 import kotlinx.android.synthetic.main.include_detail_post_title.*
 import kotlinx.android.synthetic.main.include_item_timeline_ic_score.*
 import kotlinx.android.synthetic.main.include_item_timeline_timeleft.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailFragment : Fragment()   {
 
@@ -37,9 +37,7 @@ class DetailFragment : Fragment()   {
 
     private var post: PostData? = null
 
-    private val commentViewModel: CommentViewModel by lazy {
-        ViewModelProviders.of(this).get(CommentViewModel::class.java)
-    }
+    private val commentViewModel: CommentViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.arguments.let {

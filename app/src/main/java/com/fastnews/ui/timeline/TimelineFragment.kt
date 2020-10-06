@@ -25,14 +25,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.abs
 
 
 class TimelineFragment : Fragment(R.layout.fragment_timeline) {
 
-    private val viewModel: PostViewModel by lazy {
-        ViewModelProviders.of(this).get(PostViewModel::class.java)
-    }
+    private val viewModel: PostViewModel by viewModel ()
 
     private val adapter: TimelineAdapter by lazy {
         TimelineAdapter { it, imageView -> onClickItem(it, imageView) }
@@ -113,8 +112,9 @@ class TimelineFragment : Fragment(R.layout.fragment_timeline) {
         val extras = FragmentNavigatorExtras(
             imageView to "thumbnail"
         )
-        var bundle = Bundle()
-        bundle.putParcelable(KEY_POST, postData)
+        val bundle = Bundle().apply {
+            putParcelable(KEY_POST, postData)
+        }
         findNavController().navigate(R.id.action_timeline_to_detail, bundle, null, extras)
     }
 }
