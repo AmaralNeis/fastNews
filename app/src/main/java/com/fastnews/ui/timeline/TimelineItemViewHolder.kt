@@ -1,11 +1,11 @@
 package com.fastnews.ui.timeline
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.text.TextUtils
 import android.view.View
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.fastnews.extension.loadWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.service.model.PostData
 import kotlinx.android.synthetic.main.include_item_timeline_ic_comments.view.*
@@ -45,21 +45,16 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun populateThumbnail(value: PostData?) {
-        value?.thumbnail.let {
 
+        value?.preview?.images?.first()?.let {
             val PREFIX_HTTP = "http"
-
-            if (!TextUtils.isEmpty(it) && it!!.startsWith(PREFIX_HTTP)) {
-                Glide.with(view.item_timeline_thumbnail.context)
-                    .load(it)
-                    .placeholder(ColorDrawable(Color.LTGRAY))
-                    .error(ColorDrawable(Color.DKGRAY))
-                    .into(view.item_timeline_thumbnail)
-                view.item_timeline_thumbnail.visibility = View.VISIBLE
+            if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
+                val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+                Glide.with(view.item_timeline_thumbnail.context).loadWith(url, view.item_timeline_thumbnail)
             } else {
                 view.item_timeline_thumbnail.visibility = View.GONE
             }
-        }
+        }?: kotlin.run { view.item_timeline_thumbnail.visibility = View.GONE }
     }
 
     private fun populateTime(value: PostData?) {

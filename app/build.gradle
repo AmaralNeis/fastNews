@@ -132,6 +132,9 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'
 

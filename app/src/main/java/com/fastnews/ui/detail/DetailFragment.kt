@@ -8,12 +8,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.fastnews.R
+import com.fastnews.extension.loadWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.mechanism.VerifyNetworkInfo
 import com.fastnews.service.model.CommentData
@@ -22,13 +24,12 @@ import com.fastnews.ui.web.CustomTabsWeb
 import com.fastnews.viewmodel.CommentViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_detail_post.*
-import kotlinx.android.synthetic.main.fragment_timeline.*
 import kotlinx.android.synthetic.main.include_detail_post_thumbnail.*
 import kotlinx.android.synthetic.main.include_detail_post_title.*
 import kotlinx.android.synthetic.main.include_item_timeline_ic_score.*
 import kotlinx.android.synthetic.main.include_item_timeline_timeleft.*
 
-class DetailFragment : Fragment() {
+class DetailFragment : Fragment()   {
 
     companion object {
         val KEY_POST = "KEY_POST"
@@ -94,15 +95,15 @@ class DetailFragment : Fragment() {
     }
 
     private fun fetchComments() {
-            post.let {
-                commentViewModel.getComments(postId = post!!.id).observe(this, Observer<List<CommentData>> { comments ->
-                    comments.let {
-                        populateComments(comments)
-                        hideStateProgress()
-                        showComments()
-                    }
-                })
-            }
+        post.let {
+            commentViewModel.getComments(postId = post!!.id).observe(this, Observer<List<CommentData>> { comments ->
+                comments.let {
+                    populateComments(comments)
+                    hideStateProgress()
+                    showComments()
+                }
+            })
+        }
     }
 
     private fun populateComments(comments: List<CommentData>) {
@@ -160,29 +161,15 @@ class DetailFragment : Fragment() {
     }
 
     private fun populateThumbnail() {
-        val PREFIX_HTTP = "http"
-        var thumbnailUrl = ""
-
-        // TODO Fix high quality images
-        /*if(post?.preview != null) {
-            post?.preview?.images?.map {
-                if (!TextUtils.isEmpty(it.source.url)) {
-                    thumbnailUrl = it.source.url
-                }
+        post?.preview?.images?.first()?.let {
+            val PREFIX_HTTP = "http"
+            if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
+                val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+                Glide.with(item_detail_post_thumbnail.context).loadWith(url, item_detail_post_thumbnail)
+            } else {
+                item_detail_post_thumbnail.visibility = View.GONE
             }
-        }*/
-
-        if (!TextUtils.isEmpty(post?.thumbnail) && post?.thumbnail!!.startsWith(PREFIX_HTTP)) {
-            thumbnailUrl = post!!.thumbnail
-        }
-
-        if (!TextUtils.isEmpty(thumbnailUrl)) {
-            Glide.with(item_detail_post_thumbnail.context)
-                .load(thumbnailUrl)
-                .placeholder(R.drawable.ic_placeholder)
-                .into(item_detail_post_thumbnail)
-            item_detail_post_thumbnail.visibility = View.VISIBLE
-        }
+        }?: kotlin.run { item_detail_post_thumbnail.visibility = View.GONE }
     }
 
     private fun buildOnClickDetailThumbnail() {
