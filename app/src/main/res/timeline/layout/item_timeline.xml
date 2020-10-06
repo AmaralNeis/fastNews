@@ -36,10 +36,11 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
-            <include android:visibility="gone" layout="@layout/include_item_timeline_ic_share" />
+            <include
+                android:id="@+id/include_item_timeline_ic_share"
+                layout="@layout/include_item_timeline_ic_share" />
 
             <View
-                    android:visibility="gone"
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/light_gray" />
@@ -47,7 +48,7 @@
             <include layout="@layout/include_item_timeline_ic_comments" />
 
             <View
-                    android:visibility="gone"
+
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/light_gray" />

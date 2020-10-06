@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.include_item_timeline_ic_score.*
 import kotlinx.android.synthetic.main.include_item_timeline_timeleft.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DetailFragment : Fragment()   {
+class DetailFragment : Fragment()  {
 
     companion object {
         val KEY_POST = "KEY_POST"
@@ -59,8 +59,6 @@ class DetailFragment : Fragment()   {
 
     private fun buildActionBar() {
         val activity = activity as AppCompatActivity
-
-        //activity.setSupportActionBar(toolbar)
         activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
     }
@@ -93,8 +91,8 @@ class DetailFragment : Fragment()   {
     }
 
     private fun fetchComments() {
-        post.let {
-            commentViewModel.getComments(postId = post!!.id).observe(this, Observer<List<CommentData>> { comments ->
+        post?.let {
+            commentViewModel.getComments(postId = it.id).observe(viewLifecycleOwner, Observer { comments ->
                 comments.let {
                     populateComments(comments)
                     hideStateProgress()
@@ -173,8 +171,8 @@ class DetailFragment : Fragment()   {
     private fun buildOnClickDetailThumbnail() {
         item_detail_post_thumbnail.setOnClickListener {
             if(!post?.url.isNullOrEmpty()) {
-                context.let {
-                    val customTabsWeb = CustomTabsWeb(context!!, post?.url!!)
+                context?.let {context ->
+                    val customTabsWeb = CustomTabsWeb(context, post?.url!!)
                     customTabsWeb.openUrlWithCustomTabs()
                 }
             } else {
@@ -184,7 +182,7 @@ class DetailFragment : Fragment()   {
     }
 
     private fun populateScore() {
-        post?.score.let {
+        post?.score?.let {
             item_timeline_bt_score_text.text = it.toString()
         }
     }

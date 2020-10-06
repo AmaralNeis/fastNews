@@ -1,5 +1,6 @@
 package com.fastnews.ui.timeline
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,8 @@ class TimelineFragment : Fragment(R.layout.fragment_timeline) {
     private val viewModel: PostViewModel by viewModel ()
 
     private val adapter: TimelineAdapter by lazy {
-        TimelineAdapter { it, imageView -> onClickItem(it, imageView) }
+        TimelineAdapter( onClickItem = {it, imageView -> onClickItem(it, imageView)},
+            onShareListener = {onShareListenerWith(it)})
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,4 +119,17 @@ class TimelineFragment : Fragment(R.layout.fragment_timeline) {
         }
         findNavController().navigate(R.id.action_timeline_to_detail, bundle, null, extras)
     }
+
+    private fun onShareListenerWith(url: String?) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
+
 }

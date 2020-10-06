@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.include_item_timeline_ic_score.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_thumbnail.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_timeleft.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_title.view.*
+import kotlinx.android.synthetic.main.item_timeline.view.*
 
 class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -25,16 +27,23 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             return TimelineItemViewHolder(view)
         }
     }
-    var data: PostData? = null
-        set(value) {
-            field = value
-            populateAuthor(value)
-            populateTime(value)
-            populateThumbnail(value)
-            populateTitle(value)
-            populateScore(value)
-            populateComments(value)
+
+    fun bind(value: PostData, onClickItem: (PostData, ImageView) -> Unit, onShareListener: (String?) -> Unit) {
+        view.setOnClickListener { onClickItem(value, view.item_timeline_thumbnail) }
+        populateAuthor(value)
+        populateTime(value)
+        populateThumbnail(value)
+        populateTitle(value)
+        populateScore(value)
+        populateComments(value)
+        setupSharedClick(value.url, onShareListener)
+    }
+
+    private fun setupSharedClick(url: String?, onShareListener: (String?) -> Unit) {
+        view.include_item_timeline_ic_share.setOnClickListener {
+            onShareListener(url)
         }
+    }
 
     private fun populateComments(value: PostData?) {
         value?.num_comments.let {
