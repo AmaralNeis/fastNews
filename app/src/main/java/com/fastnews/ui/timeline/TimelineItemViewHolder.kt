@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.fastnews.R
-import com.fastnews.extension.loadWith
+import com.fastnews.extension.loadImageWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.service.model.PostData
 import kotlinx.android.synthetic.main.include_item_timeline_ic_comments.view.*
@@ -69,7 +68,7 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             val PREFIX_HTTP = "http"
             if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
                 val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
-                Glide.with(view.item_timeline_thumbnail.context).loadWith(url, view.item_timeline_thumbnail)
+                view.item_timeline_thumbnail.loadImageWith(url)
             } else {
                 view.item_timeline_thumbnail.visibility = View.GONE
             }

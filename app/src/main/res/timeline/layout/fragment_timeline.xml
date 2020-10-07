@@ -1,39 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/bottomsheet"
-        android:background="@color/light_gray"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.timeline.TimelineFragment">
+<LinearLayout android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomsheet"
+    android:background="@color/light_gray"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.timeline.TimelineFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+        <include
+            android:id="@+id/state_progress_timeline"
+            layout="@layout/include_state_progress_timeline"/>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/timeline_rv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:cacheColorHint="@android:color/transparent"
-                android:clipToPadding="false"
-                android:divider="@color/transparent"
-                android:listSelector="@android:color/transparent"
-                android:scrollbars="none"
-                android:visibility="gone"
-                tools:listitem="@layout/item_timeline"/>
 
-        <include
-                android:id="@+id/state_progress_timeline"
-                layout="@layout/include_state_progress_timeline"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/timeline_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:clipToPadding="false"
+                    android:divider="@color/transparent"
+                    android:listSelector="@android:color/transparent"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_timeline"/>
 
-        <include
-                android:id="@+id/state_without_conn_timeline"
-                layout="@layout/include_state_without_conn_timeline"
-                android:visibility="gone"/>
+                <!--        <ViewFlipper-->
+                <!--            android:id="@+id/viewFlipper"-->
+                <!--            android:layout_width="match_parent"-->
+                <!--            android:layout_height="match_parent"-->
+                <!--            android:orientation="vertical">-->
 
-    </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                <!--     -->
+
+                <!--            <include-->
+                <!--                android:id="@+id/state_without_conn_timeline"-->
+                <!--                layout="@layout/include_state_without_conn_timeline" />-->
+
+
+
+                <!--        </ViewFlipper>-->
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

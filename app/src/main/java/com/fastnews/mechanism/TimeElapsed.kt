@@ -1,6 +1,6 @@
 package com.fastnews.mechanism
 
-import java.util.Date
+import java.util.*
 
 object TimeElapsed {
 

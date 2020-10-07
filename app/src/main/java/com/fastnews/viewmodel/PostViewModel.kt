@@ -13,15 +13,13 @@ import kotlinx.coroutines.flow.Flow
 
 class PostViewModel(private val repository: PostRepository) : ViewModel() {
 
-    fun getPosts(): Flow<PagingData<PostData>> {
+    fun getPosts(isRefresh: Boolean): Flow<PagingData<PostData>> {
         return Pager(
-            config = PagingConfig(pageSize = 10,
-                initialLoadSize = 20,
-                prefetchDistance = 5,
-                enablePlaceholders = false),
-
-            pagingSourceFactory = { PostDataSource(repository) }
+                config = PagingConfig(pageSize = 10,
+                    initialLoadSize = 20,
+                    prefetchDistance = 5,
+                    enablePlaceholders = false),
+                pagingSourceFactory = { PostDataSource(repository, isRefresh) }
         ).flow.cachedIn(viewModelScope)
     }
-
 }

@@ -12,9 +12,8 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.fastnews.R
-import com.fastnews.extension.loadWith
+import com.fastnews.extension.loadImageWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.mechanism.VerifyNetworkInfo
 import com.fastnews.service.model.CommentData
@@ -104,14 +103,16 @@ class DetailFragment : Fragment()  {
 
     private fun populateComments(comments: List<CommentData>) {
         if (isAdded) {
-            activity?.runOnUiThread(Runnable {
-                detail_post_comments.removeAllViews()
+            activity?.let {
+                it.runOnUiThread(Runnable {
+                    detail_post_comments.removeAllViews()
 
-                for (comment in comments) {
-                    val itemReview = CommentItem.newInstance(activity!!, comment)
-                    detail_post_comments.addView(itemReview)
-                }
-            })
+                    for (comment in comments) {
+                        val itemReview = CommentItem.newInstance(it, comment)
+                        detail_post_comments.addView(itemReview)
+                    }
+                })
+            }
         }
     }
 
@@ -161,7 +162,7 @@ class DetailFragment : Fragment()  {
             val PREFIX_HTTP = "http"
             if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
                 val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
-                Glide.with(item_detail_post_thumbnail.context).loadWith(url, item_detail_post_thumbnail)
+                item_detail_post_thumbnail.loadImageWith(url)
             } else {
                 item_detail_post_thumbnail.visibility = View.GONE
             }

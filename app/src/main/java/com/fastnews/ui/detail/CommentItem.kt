@@ -1,10 +1,10 @@
 package com.fastnews.ui.detail
 
-import android.animation.Animator
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import com.fastnews.R
+import com.fastnews.extension.animationEndCallback
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.service.model.CommentData
 import kotlinx.android.synthetic.main.item_detail_post_comment.view.*
@@ -34,42 +34,19 @@ class CommentItem(val activity: Activity, private val postComment: CommentData) 
     private fun populateCommentsIcon() {
         row.setOnClickListener {
             isVisible = !isVisible
-            if (isVisible) {
-                row.item_comment_container.animate().alpha(0.0f).setDuration(500).setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {}
-
-                    override fun onAnimationEnd(animator: Animator) {
-                        row.item_comment_container.visibility = View.GONE
-                        row.ic_comments.setImageDrawable(activity.getDrawable(R.drawable.ic_comments_down))
-                    }
-
-                    override fun onAnimationCancel(animator: Animator) {
-
-                    }
-
-                    override fun onAnimationRepeat(animator: Animator) {
-
-                    }
-                })
-            } else {
-                row.item_comment_container.animate().alpha(1.0f).setDuration(500).setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {}
-
-                    override fun onAnimationEnd(animator: Animator) {
-                        row.item_comment_container.visibility = View.VISIBLE
-                        row.ic_comments.setImageDrawable(activity.getDrawable(R.drawable.ic_comments_up))
-                    }
-
-                    override fun onAnimationCancel(animator: Animator) {
-
-                    }
-
-                    override fun onAnimationRepeat(animator: Animator) {
-
-                    }
-                })
-            }
+            val alpha = if (isVisible) 0.0f else 1.0f
+            row.item_comment_container.animate().alpha(alpha).animationEndCallback { animateButtom(!isVisible)}
         }
+    }
+
+    private fun animateButtom(isShowUp: Boolean) {
+        row.item_comment_container.visibility = if (isShowUp) View.VISIBLE else View.GONE
+
+        val drawable = if (isShowUp)
+            activity.getDrawable(R.drawable.ic_comments_up)
+        else activity.getDrawable(R.drawable.ic_comments_down)
+
+        row.ic_comments.setImageDrawable(drawable)
     }
 
     private fun populateTimeLeftText() {
