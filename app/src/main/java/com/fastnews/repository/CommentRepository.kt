@@ -1,7 +1,7 @@
 package com.fastnews.repository
 
 import com.fastnews.service.api.RedditAPI
-import com.fastnews.service.model.CommentData
+import com.fastnews.model.CommentData
 
 object CommentRepository : BaseRepository() {
 

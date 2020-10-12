@@ -1,7 +1,7 @@
 package com.fastnews.service.api
 
-import com.fastnews.service.model.CommentResponse
-import com.fastnews.service.model.PostResponse
+import com.fastnews.model.CommentResponse
+import com.fastnews.model.PostResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET

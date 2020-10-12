@@ -16,8 +16,8 @@ import com.fastnews.R
 import com.fastnews.extension.loadImageWith
 import com.fastnews.mechanism.TimeElapsed
 import com.fastnews.mechanism.VerifyNetworkInfo
-import com.fastnews.service.model.CommentData
-import com.fastnews.service.model.PostData
+import com.fastnews.model.CommentData
+import com.fastnews.model.PostData
 import com.fastnews.ui.web.CustomTabsWeb
 import com.fastnews.viewmodel.CommentViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -58,7 +58,7 @@ class DetailFragment : Fragment()  {
 
     private fun buildActionBar() {
         val activity = activity as AppCompatActivity
-        activity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
     }
 
@@ -145,8 +145,8 @@ class DetailFragment : Fragment()  {
     }
 
     private fun populateTimeLeftValue() {
-        post?.created_utc.let {
-            val elapsed = TimeElapsed.getTimeElapsed(it!!.toLong())
+        post?.createdUtc?.let {
+            val elapsed = TimeElapsed.getTimeElapsed(it)
             item_timeline_timeleft.text = elapsed
         }
     }
@@ -158,10 +158,10 @@ class DetailFragment : Fragment()  {
     }
 
     private fun populateThumbnail() {
-        post?.preview?.images?.first()?.let {
+        post?.imageUrl?.let {
             val PREFIX_HTTP = "http"
-            if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
-                val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+            if (!TextUtils.isEmpty(it) && it.startsWith(PREFIX_HTTP)) {
+                val url = HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                 item_detail_post_thumbnail.loadImageWith(url)
             } else {
                 item_detail_post_thumbnail.visibility = View.GONE

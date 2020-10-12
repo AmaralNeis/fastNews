@@ -1,4 +1,4 @@
-package com.fastnews.service.model
+package com.fastnews.model
 
 data class CommentResponse(val data: CommentDataChild)
 

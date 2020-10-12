@@ -1,7 +1,7 @@
 package com.fastnews.repository
 
+import com.fastnews.model.PostDataChild
 import com.fastnews.service.api.RedditAPI
-import com.fastnews.service.model.PostDataChild
 
 object PostRepository : BaseRepository() {
 
@@ -10,6 +10,5 @@ object PostRepository : BaseRepository() {
         val postResponse = safeApiCall(call = { RedditAPI.redditService.getPostList(after, limit).await() },
             errorMessage = "Error to fetching posts")
         return postResponse?.data
-
     }
 }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.fastnews.R
 import com.fastnews.extension.loadImageWith
 import com.fastnews.mechanism.TimeElapsed
-import com.fastnews.service.model.PostData
+import com.fastnews.model.PostData
 import kotlinx.android.synthetic.main.include_item_timeline_ic_comments.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_ic_score.view.*
 import kotlinx.android.synthetic.main.include_item_timeline_thumbnail.view.*
@@ -45,7 +45,7 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun populateComments(value: PostData?) {
-        value?.num_comments.let {
+        value?.numComments.let {
             view.item_timeline_bt_comments_text.text = it.toString()
         }
     }
@@ -64,10 +64,10 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private fun populateThumbnail(value: PostData?) {
 
-        value?.preview?.images?.first()?.let {
+        value?.imageUrl?.let {
             val PREFIX_HTTP = "http"
-            if (!TextUtils.isEmpty(it.source.url) && it.source.url.startsWith(PREFIX_HTTP)) {
-                val url = HtmlCompat.fromHtml(it.source.url, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+            if (!TextUtils.isEmpty(it) && it.startsWith(PREFIX_HTTP)) {
+                val url = HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
                 view.item_timeline_thumbnail.loadImageWith(url)
             } else {
                 view.item_timeline_thumbnail.visibility = View.GONE
@@ -76,7 +76,7 @@ class TimelineItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun populateTime(value: PostData?) {
-        value?.created_utc.let {
+        value?.createdUtc.let {
             val elapsed = TimeElapsed.getTimeElapsed(it!!)
             view.item_timeline_timeleft.text = elapsed
         }

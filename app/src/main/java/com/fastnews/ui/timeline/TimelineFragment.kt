@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.fastnews.R
 import com.fastnews.mechanism.VerifyNetworkInfo
-import com.fastnews.service.model.PostData
+import com.fastnews.model.PostData
 import com.fastnews.ui.detail.DetailFragment.Companion.KEY_POST
 import com.fastnews.viewmodel.PostViewModel
 import kotlinx.android.synthetic.main.fragment_timeline.*
@@ -39,24 +40,8 @@ class TimelineFragment: Fragment(R.layout.fragment_timeline) {
         buildActionBar()
         buildTimeline()
         setupSwipeRefresh()
-        verifyConnectionState()
-    }
-
-    private fun verifyConnectionState() {
-        context.let {
-            if (VerifyNetworkInfo.isConnected(it!!)) {
-//                hideNoConnectionState()
-                showProgress()
-                fetchTimeline()
-            } else {
-                hideProgress()
-                showNoConnectionState()
-
-//                state_without_conn_timeline.setOnClickListener {
-//                    verifyConnectionState()
-//                }
-            }
-        }
+        fetchTimeline()
+        setupOfflineButton()
     }
 
     private fun buildActionBar() {
@@ -75,29 +60,28 @@ class TimelineFragment: Fragment(R.layout.fragment_timeline) {
             itemAnimator = DefaultItemAnimator()
             adapter = timelineAdapter
         }
-
-        lifecycleScope.launch {
-            timelineAdapter.loadStateFlow.collectLatest { loadStates ->
-                 if (loadStates.refresh is LoadState.Loading) showProgress() else hideProgress()
-            }
-        }
     }
 
     private fun setupSwipeRefresh() {
         swipeRefresh.setOnRefreshListener {
             timelineAdapter.refresh()
-            fetchTimeline(true)
+            fetchTimeline()
         }
     }
 
-    private fun fetchTimeline(isRefresh: Boolean = false) {
-        if (timelineAdapter.itemCount == 0) {
-            lifecycleScope.launch {
+    private fun fetchTimeline() {
 
-                viewModel.getPosts(isRefresh).collectLatest {
-                    swipeRefresh.isRefreshing = false
-                    timelineAdapter.submitData(it)
-                }
+        lifecycleScope.launch {
+            timelineAdapter.loadStateFlow.collectLatest { loadStates ->
+                if (loadStates.refresh is LoadState.Loading) showProgress() else hideProgress()
+                if (loadStates.refresh is LoadState.Error) checkNetwork()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.getPosts().collectLatest {
+                swipeRefresh.isRefreshing = false
+                timelineAdapter.submitData(it)
             }
         }
     }
@@ -110,10 +94,28 @@ class TimelineFragment: Fragment(R.layout.fragment_timeline) {
     private fun hideProgress() {
         swipeRefresh.isRefreshing = false
         state_progress_timeline.visibility = View.GONE
+        hideNoConnectionState()
+    }
+
+    private fun checkNetwork() {
+
+        if (!VerifyNetworkInfo.isConnected(requireContext()) && timelineAdapter.itemCount == 0) {
+            showNoConnectionState()
+        }
     }
 
     private fun showNoConnectionState() {
-//        state_without_conn_timeline.visibility = View.VISIBLE
+        state_without_conn_timeline.visibility = View.VISIBLE
+    }
+
+    private fun setupOfflineButton() {
+        state_without_conn_timeline.setOnClickListener {
+            fetchTimeline()
+        }
+    }
+
+    private fun hideNoConnectionState() {
+        state_without_conn_timeline.visibility = View.GONE
     }
 
     private fun onClickItem(postData: PostData, imageView: ImageView) {
@@ -136,6 +138,4 @@ class TimelineFragment: Fragment(R.layout.fragment_timeline) {
         val shareIntent = Intent.createChooser(sendIntent, null)
         startActivity(shareIntent)
     }
-
-
 }

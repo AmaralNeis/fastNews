@@ -13,11 +13,15 @@
             android:id="@+id/state_progress_timeline"
             layout="@layout/include_state_progress_timeline"/>
 
+        <include
+            android:visibility="gone"
+            android:id="@+id/state_without_conn_timeline"
+            layout="@layout/include_state_without_conn_timeline"/>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/timeline_rv"
@@ -30,25 +34,6 @@
                     android:scrollbars="none"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_timeline"/>
-
-                <!--        <ViewFlipper-->
-                <!--            android:id="@+id/viewFlipper"-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="match_parent"-->
-                <!--            android:orientation="vertical">-->
-
-
-
-                <!--     -->
-
-                <!--            <include-->
-                <!--                android:id="@+id/state_without_conn_timeline"-->
-                <!--                layout="@layout/include_state_without_conn_timeline" />-->
-
-
-
-                <!--        </ViewFlipper>-->
-
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>
