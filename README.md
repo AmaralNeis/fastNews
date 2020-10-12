@@ -10,7 +10,7 @@ O Fast News é um aplicativo de para você acompanhar as últimas noticias do mu
 
 ### Bibliotecas Adicinadas
   - ``Koin`` -> Biblioteca utilizada para realizar DI.
-  - `Paging` -> Biblioteca utilizada para realizar a paginação dos itens no projeto.
+  - `Paging` -> Biblioteca utilizada para realizar a paginação dos Posts.
   - `Room`   -> Biblioteca utilizada para armazenamento de dados locais.
 
 ### Próximos passos 
